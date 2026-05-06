@@ -1,0 +1,30 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.svm import SVC
+X, y = make_classification(
+   n_samples=200,
+   n_features=2,
+   n_redundant=0,
+   n_informative=2,
+   n_clusters_per_class=1,
+   class_sep=2.0,
+   random_state=42)
+model = SVC(kernel="linear")
+model.fit(X, y)
+plt.figure(figsize=(6,5))
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap="bwr", edgecolors="k")
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+xx = np.linspace(xlim[0], xlim[1], 50)
+yy = np.linspace(ylim[0], ylim[1], 50)
+YY, XX = np.meshgrid(yy, xx)
+xy = np.vstack([XX.ravel(), YY.ravel()]).T
+Z = model.decision_function(xy).reshape(XX.shape)
+plt.contour(XX, YY, Z, levels=[0], linewidths=2, colors='green')
+plt.title("Linear Separability using Linear SVM")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.grid()
+plt.show()
