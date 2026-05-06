@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.preprocessing import StandardScaler
+data = load_iris()
+X = data.data
+y = data.target
+class_names = data.target_names
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split
+   (X, y, test_size=0.3, random_state=42)
+model = RandomForestClassifier(
+   n_estimators=100,
+   criterion="gini",
+   random_state=42)
+ 
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+ 
+print("\nClassification Report:\n")
+print(classification_report(y_test, y_pred, target_names=class_names))
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:\n", cm)
+plt.figure(figsize=(6,5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Oranges',
+           xticklabels=class_names,
+           yticklabels=class_names)
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix (Random Forest - Iris Dataset)")
+plt.show()
+importances = model.feature_importances_
+features = data.feature_names
+ 
+plt.figure(figsize=(7,5))
+sns.barplot(x=importances, y=features, palette="viridis")
+plt.title("Feature Importance (Random Forest)")
+plt.xlabel("Importance Score")
+plt.ylabel("Features")
+plt.show()
